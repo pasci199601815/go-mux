@@ -66,3 +66,48 @@ func getProducts(db *sql.DB, start, count int) ([]product, error) {
 
 	return products, nil
 }
+
+func getYoungestProduct(db *sql.DB) ([]product, error) {
+	rows, err := db.Query(
+		"SELECT id, name, price FROM products ORDER BY id DESC LIMIT 1")
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var youngestproduct []product
+
+	for rows.Next() {
+		var p product
+		if err := rows.Scan(&p.ID, &p.Name, &p.Price); err != nil {
+			return nil, err
+		}
+		youngestproduct = append(youngestproduct, p)
+	}
+
+	return youngestproduct, nil
+}
+
+func getOldestProduct(db *sql.DB) ([]product, error) {
+	rows, err := db.Query(
+		"SELECT id, name, price FROM products ORDER BY id ASC LIMIT 1")
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var oldestproduct []product
+
+	for rows.Next() {
+		var p product
+		if err := rows.Scan(&p.ID, &p.Name, &p.Price); err != nil {
+			return nil, err
+		}
+		oldestproduct = append(oldestproduct, p)
+	}
+	return oldestproduct, nil
+}
