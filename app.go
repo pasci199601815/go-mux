@@ -19,6 +19,8 @@ type App struct {
 	DB     *sql.DB
 }
 
+const prod = "/product/{id:[0-9]+}"
+
 func (a *App) Initialize(user, password, dbname string) {
 	connectionString :=
 		fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", user, password, dbname)
@@ -173,9 +175,9 @@ func (a *App) getYoungestProduct(w http.ResponseWriter, r *http.Request) {
 func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/products", a.getProducts).Methods("GET")
 	a.Router.HandleFunc("/product", a.createProduct).Methods("POST")
-	a.Router.HandleFunc("/product/{id:[0-9]+}", a.getProduct).Methods("GET")
-	a.Router.HandleFunc("/product/{id:[0-9]+}", a.updateProduct).Methods("PUT")
-	a.Router.HandleFunc("/product/{id:[0-9]+}", a.deleteProduct).Methods("DELETE")
+	a.Router.HandleFunc(prod, a.getProduct).Methods("GET")
+	a.Router.HandleFunc(prod, a.updateProduct).Methods("PUT")
+	a.Router.HandleFunc(prod, a.deleteProduct).Methods("DELETE")
 	a.Router.HandleFunc("/products/old", a.getOldestProduct).Methods("GET")
 	a.Router.HandleFunc("/products/young", a.getYoungestProduct).Methods("GET")
 }

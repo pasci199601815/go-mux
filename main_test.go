@@ -17,22 +17,22 @@ import (
 
 var a App
 
+const produrl = "/product/1"
+
 func TestMain(m *testing.M) {
 	a.Initialize(
 		"postgres",
 		"postgres",
 		"postgres")
-		//os.Getenv("APP_DB_USERNAME"),
-		//os.Getenv("APP_DB_PASSWORD"),
-		//os.Getenv("APP_DB_NAME"))
+	//os.Getenv("APP_DB_USERNAME"),
+	//os.Getenv("APP_DB_PASSWORD"),
+	//os.Getenv("APP_DB_NAME"))
 
 	ensureTableExists()
 	code := m.Run()
 	clearTable()
 	os.Exit(code)
 }
-
-// ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
 
 func ensureTableExists() {
 	if _, err := a.DB.Exec(tableCreationQuery); err != nil {
@@ -131,7 +131,7 @@ func TestGetProduct(t *testing.T) {
 	clearTable()
 	addProducts(1)
 
-	req, _ := http.NewRequest("GET", "/product/1", nil)
+	req, _ := http.NewRequest("GET", produrl, nil)
 	response := executeRequest(req)
 
 	body, _ := ioutil.ReadAll(response.Body)
@@ -155,13 +155,13 @@ func TestUpdateProduct(t *testing.T) {
 	clearTable()
 	addProducts(1)
 
-	req, _ := http.NewRequest("GET", "/product/1", nil)
+	req, _ := http.NewRequest("GET", produrl, nil)
 	response := executeRequest(req)
 	var originalProduct map[string]interface{}
 	json.Unmarshal(response.Body.Bytes(), &originalProduct)
 
 	var jsonStr = []byte(`{"name":"test product - updated name", "price": 11.22}`)
-	req, _ = http.NewRequest("PUT", "/product/1", bytes.NewBuffer(jsonStr))
+	req, _ = http.NewRequest("PUT", produrl, bytes.NewBuffer(jsonStr))
 	req.Header.Set("Content-Type", "application/json")
 
 	response = executeRequest(req)
@@ -191,11 +191,11 @@ func TestDeleteProduct(t *testing.T) {
 	clearTable()
 	addProducts(1)
 
-	req, _ := http.NewRequest("GET", "/product/1", nil)
+	req, _ := http.NewRequest("GET", produrl, nil)
 	response := executeRequest(req)
 	checkResponseCode(t, http.StatusOK, response.Code)
 
-	req, _ = http.NewRequest("DELETE", "/product/1", nil)
+	req, _ = http.NewRequest("DELETE", produrl, nil)
 	response = executeRequest(req)
 
 	body, _ := ioutil.ReadAll(response.Body)
@@ -203,7 +203,7 @@ func TestDeleteProduct(t *testing.T) {
 
 	checkResponseCode(t, http.StatusOK, response.Code)
 
-	req, _ = http.NewRequest("GET", "/product/1", nil)
+	req, _ = http.NewRequest("GET", produrl, nil)
 	response = executeRequest(req)
 	checkResponseCode(t, http.StatusNotFound, response.Code)
 }
