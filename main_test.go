@@ -32,6 +32,8 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
+// ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+
 func ensureTableExists() {
 	if _, err := a.DB.Exec(tableCreationQuery); err != nil {
 		log.Fatal(err)
